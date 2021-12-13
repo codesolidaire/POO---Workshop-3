@@ -1,6 +1,6 @@
 # Travaux d'Héraclès #3 : les oiseaux du lac Stymphale
  
-Prérequis : cloner ce *repository*.
+Test
 
 Fais un `composer install`
 
