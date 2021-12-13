@@ -9,16 +9,16 @@ class Fighter
 {
     public const MAX_LIFE = 100;
 
-    private string $name;
+    protected string $name;
 
-    private int $strength;
-    private int $dexterity;
+    protected int $strength;
+    protected int $dexterity;
     private string $image = 'fighter.svg';
 
-    private int $life = self::MAX_LIFE;
+    protected int $life = self::MAX_LIFE;
 
-    private ?Weapon $weapon = null;
-    private ?Shield $shield = null;
+    protected ?Weapon $weapon = null;
+    protected ?Shield $shield = null;
 
     public function __construct(
         string $name,
@@ -33,23 +33,18 @@ class Fighter
     }
 
     
-    public function getDamage(): int
+    public function getDamage(Fighter $defender)
     {
-        $damage = $this->getStrength();
-        if($this->getWeapon() !== null) {
-            $damage += $this->getWeapon()->getDamage();
-        }
-        return $damage;
+        // Calculez les dommages
+        // Dommages = nombre aléatoire compris entre 1 et la force de l'attaquant – défense du défenseur
+        $damage = rand(1, $this->strength) - $defender->dexterity;
+        // Sans **jamais aller en dessous de zéro**
+        $damage = max(0,$damage);
     }
 
     public function getDefense(): int
     {
-        $defense = $this->getDexterity();
-        if ($this->getShield() !== null) {
-            $defense += $this->getShield()->getProtection();
-        }    
-
-        return $defense;
+        return $this->getDexterity();
     }
 
      /**
@@ -103,13 +98,11 @@ class Fighter
     }
 
 
-    public function fight(Fighter $adversary): void
+    public function fight(Fighter $defender): Fighter
     {
-        $damage = rand(1, $this->getDamage()) - $adversary->getDefense();
-        if ($damage < 0) {
-            $damage = 0;
-        }
-        $adversary->setLife($adversary->getLife() - $damage);
+        $damage = rand(1, $this->getDamage()) - $defender->getDefense();
+        $damage = max(0, $damage);
+        $defender->setLife($defender->getLife() - $damage);
     }
 
     /**
